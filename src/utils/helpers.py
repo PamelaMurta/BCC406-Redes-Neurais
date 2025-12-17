@@ -1,7 +1,7 @@
 """
-Helper Utilities Module
+Módulo de Utilitários Auxiliares
 
-This module provides utility functions for configuration loading, logging, and common operations.
+Este módulo fornece funções utilitárias para carregamento de configuração, logging e operações comuns.
 """
 
 import yaml
@@ -16,13 +16,13 @@ import os
 
 def load_config(config_path: str = 'config/config.yaml') -> Dict:
     """
-    Load configuration from YAML file.
+    Carregar configuração de arquivo YAML.
     
     Args:
-        config_path: Path to config file
+        config_path: Caminho para arquivo de configuração
     
     Returns:
-        Configuration dictionary
+        Dicionário de configuração
     """
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
@@ -32,26 +32,26 @@ def load_config(config_path: str = 'config/config.yaml') -> Dict:
 
 def save_config(config: Dict, output_path: str) -> None:
     """
-    Save configuration to YAML file.
+    Salvar configuração em arquivo YAML.
     
     Args:
-        config: Configuration dictionary
-        output_path: Path to save config
+        config: Dicionário de configuração
+        output_path: Caminho para salvar configuração
     """
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w') as f:
         yaml.dump(config, f, default_flow_style=False, indent=2)
     
-    print(f"Configuration saved to: {output_path}")
+    print(f"Configuração salva em: {output_path}")
 
 
 def set_random_seeds(seed: int = 42) -> None:
     """
-    Set random seeds for reproducibility.
+    Definir sementes aleatórias para reprodutibilidade.
     
     Args:
-        seed: Random seed value
+        seed: Valor da semente aleatória
     """
     # Python
     random.seed(seed)
@@ -66,7 +66,7 @@ def set_random_seeds(seed: int = 42) -> None:
     except ImportError:
         pass
     
-    # PyTorch (if available)
+    # PyTorch (se disponível)
     try:
         import torch
         torch.manual_seed(seed)
@@ -75,7 +75,7 @@ def set_random_seeds(seed: int = 42) -> None:
     except ImportError:
         pass
     
-    print(f"Random seeds set to: {seed}")
+    print(f"Sementes aleatórias definidas para: {seed}")
 
 
 def setup_logging(
@@ -84,23 +84,23 @@ def setup_logging(
     log_format: Optional[str] = None
 ) -> logging.Logger:
     """
-    Setup logging configuration.
+    Configurar logging.
     
     Args:
-        log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-        log_file: Path to log file (optional)
-        log_format: Custom log format (optional)
+        log_level: Nível de logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_file: Caminho para arquivo de log (opcional)
+        log_format: Formato de log personalizado (opcional)
     
     Returns:
-        Configured logger
+        Logger configurado
     """
     if log_format is None:
         log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     
-    # Get log level
+    # Obter nível de log
     level = getattr(logging, log_level.upper(), logging.INFO)
     
-    # Configure logging
+    # Configurar logging
     handlers = [logging.StreamHandler()]
     
     if log_file:
@@ -114,10 +114,10 @@ def setup_logging(
     )
     
     logger = logging.getLogger(__name__)
-    logger.info(f"Logging configured at {log_level} level")
+    logger.info(f"Logging configurado no nível {log_level}")
     
     if log_file:
-        logger.info(f"Logging to file: {log_file}")
+        logger.info(f"Logging para arquivo: {log_file}")
     
     return logger
 
@@ -128,16 +128,16 @@ def save_results(
     format: str = 'json'
 ) -> None:
     """
-    Save results to file.
+    Salvar resultados em arquivo.
     
     Args:
-        results: Results dictionary
-        output_path: Path to save results
-        format: Format ('json', 'yaml')
+        results: Dicionário de resultados
+        output_path: Caminho para salvar resultados
+        format: Formato ('json', 'yaml')
     """
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     
-    # Convert numpy arrays to lists for JSON serialization
+    # Converter arrays numpy para listas para serialização JSON
     def convert_numpy(obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
@@ -160,20 +160,20 @@ def save_results(
         with open(output_path, 'w') as f:
             yaml.dump(results_converted, f, default_flow_style=False, indent=2)
     else:
-        raise ValueError(f"Unsupported format: {format}")
+        raise ValueError(f"Formato não suportado: {format}")
     
-    print(f"Results saved to: {output_path}")
+    print(f"Resultados salvos em: {output_path}")
 
 
 def load_results(input_path: str) -> Dict:
     """
-    Load results from file.
+    Carregar resultados de arquivo.
     
     Args:
-        input_path: Path to results file
+        input_path: Caminho para arquivo de resultados
     
     Returns:
-        Results dictionary
+        Dicionário de resultados
     """
     ext = Path(input_path).suffix.lower()
     
@@ -184,67 +184,67 @@ def load_results(input_path: str) -> Dict:
         with open(input_path, 'r') as f:
             results = yaml.safe_load(f)
     else:
-        raise ValueError(f"Unsupported file format: {ext}")
+        raise ValueError(f"Formato de arquivo não suportado: {ext}")
     
     return results
 
 
 def ensure_dir(directory: str) -> None:
     """
-    Ensure directory exists.
+    Garantir que o diretório existe.
     
     Args:
-        directory: Directory path
+        directory: Caminho do diretório
     """
     Path(directory).mkdir(parents=True, exist_ok=True)
 
 
 def get_project_root() -> Path:
     """
-    Get project root directory.
+    Obter diretório raiz do projeto.
     
     Returns:
-        Project root path
+        Caminho raiz do projeto
     """
     return Path(__file__).parent.parent.parent
 
 
 def print_system_info() -> None:
-    """Print system information."""
+    """Imprimir informações do sistema."""
     import platform
     import sys
     
     print("=" * 60)
-    print("System Information")
+    print("Informações do Sistema")
     print("=" * 60)
-    print(f"Python version: {sys.version}")
-    print(f"Platform: {platform.platform()}")
-    print(f"Processor: {platform.processor()}")
+    print(f"Versão Python: {sys.version}")
+    print(f"Plataforma: {platform.platform()}")
+    print(f"Processador: {platform.processor()}")
     
-    # Check for TensorFlow and GPU
+    # Verificar TensorFlow e GPU
     try:
         import tensorflow as tf
-        print(f"TensorFlow version: {tf.__version__}")
+        print(f"Versão TensorFlow: {tf.__version__}")
         gpus = tf.config.list_physical_devices('GPU')
         if gpus:
-            print(f"GPUs available: {len(gpus)}")
+            print(f"GPUs disponíveis: {len(gpus)}")
             for gpu in gpus:
                 print(f"  - {gpu}")
         else:
-            print("No GPU available (using CPU)")
+            print("Nenhuma GPU disponível (usando CPU)")
     except ImportError:
-        print("TensorFlow not installed")
+        print("TensorFlow não instalado")
     
-    # Check for other libraries
+    # Verificar outras bibliotecas
     try:
         import sklearn
-        print(f"scikit-learn version: {sklearn.__version__}")
+        print(f"Versão scikit-learn: {sklearn.__version__}")
     except ImportError:
         pass
     
     try:
         import librosa
-        print(f"librosa version: {librosa.__version__}")
+        print(f"Versão librosa: {librosa.__version__}")
     except ImportError:
         pass
     
@@ -253,13 +253,13 @@ def print_system_info() -> None:
 
 def format_time(seconds: float) -> str:
     """
-    Format time in human-readable format.
+    Formatar tempo em formato legível.
     
     Args:
-        seconds: Time in seconds
+        seconds: Tempo em segundos
     
     Returns:
-        Formatted time string
+        String de tempo formatada
     """
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
@@ -275,19 +275,19 @@ def format_time(seconds: float) -> str:
 
 def count_parameters(model) -> int:
     """
-    Count trainable parameters in a model.
+    Contar parâmetros treináveis em um modelo.
     
     Args:
-        model: Model instance (Keras or sklearn)
+        model: Instância do modelo (Keras ou sklearn)
     
     Returns:
-        Number of parameters
+        Número de parâmetros
     """
     try:
-        # For Keras models
+        # Para modelos Keras
         return model.count_params()
     except AttributeError:
-        # For sklearn models
+        # Para modelos sklearn
         try:
             return sum(tree.tree_.node_count for tree in model.estimators_)
         except:
@@ -295,16 +295,16 @@ def count_parameters(model) -> int:
 
 
 if __name__ == "__main__":
-    print("Helper Utilities Module")
+    print("Módulo de Utilitários Auxiliares")
     print("=" * 50)
-    print("\nUtility functions available:")
-    print("- load_config(): Load configuration from YAML")
-    print("- save_config(): Save configuration to YAML")
-    print("- set_random_seeds(): Set seeds for reproducibility")
-    print("- setup_logging(): Configure logging")
-    print("- save_results(): Save results to JSON/YAML")
-    print("- load_results(): Load results from file")
-    print("- print_system_info(): Display system information")
+    print("\nFunções utilitárias disponíveis:")
+    print("- load_config(): Carregar configuração de YAML")
+    print("- save_config(): Salvar configuração em YAML")
+    print("- set_random_seeds(): Definir sementes para reprodutibilidade")
+    print("- setup_logging(): Configurar logging")
+    print("- save_results(): Salvar resultados em JSON/YAML")
+    print("- load_results(): Carregar resultados de arquivo")
+    print("- print_system_info(): Exibir informações do sistema")
     
-    print("\nExample:")
+    print("\nExemplo:")
     print_system_info()
