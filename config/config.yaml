@@ -1,33 +1,33 @@
-# Configuration file for RF vs CNN Speaker Identification Project
-# Based on: PROPOSTA DE PESQUISA - Disciplina BCC177 - Redes Neurais
+# Arquivo de configuração para o Projeto de Identificação de Falantes RF vs CNN
+# Baseado em: PROPOSTA DE PESQUISA - Disciplina BCC177 - Redes Neurais
 
-# Dataset Configuration
+# Configuração do Dataset
 dataset:
   name: "VoxCeleb1"
-  num_speakers: 10  # 5-10 speakers
+  num_speakers: 10  # 5-10 falantes
   min_samples_per_speaker: 100
   data_dir: "data/voxceleb1"
   processed_dir: "data/processed"
   
-# Data Splits
+# Divisão de Dados
 splits:
   train: 0.70
   val: 0.15
   test: 0.15
   
-# Random Seeds (for reproducibility)
+# Sementes Aleatórias (para reprodutibilidade)
 seeds:
   numpy: 42
   tensorflow: 42
   sklearn: 42
 
-# Audio Preprocessing (Section 3.2)
+# Pré-processamento de Áudio (Seção 3.2)
 preprocessing:
   sample_rate: 16000  # 16kHz
   channels: 1  # mono
   vad:
     enabled: true
-    threshold_db: 20  # Voice Activity Detection threshold
+    threshold_db: 20  # Limiar de Detecção de Atividade de Voz
     frame_length: 2048
     hop_length: 512
   normalization:
@@ -36,7 +36,7 @@ preprocessing:
     max_frames: 100  # Tmax = 100 frames
     method: "pad_or_truncate"
 
-# Feature Extraction (Section 3.3)
+# Extração de Features (Seção 3.3)
 features:
   mfcc:
     n_mfcc: 40  # 40 MFCCs
@@ -48,21 +48,21 @@ features:
     include_deltas: true
     include_delta_deltas: true
   pitch:
-    method: "pyin"  # pYIN algorithm
+    method: "pyin"  # algoritmo pYIN
     fmin: 80  # Hz
     fmax: 400  # Hz
     statistics: ["mean", "std", "min", "max"]  # 4 features
   spectral:
     features: ["centroid", "rolloff", "zcr"]  # 3 features
-  # Total sequential features: 40 (MFCC) + 40 (delta) + 40 (delta-delta) + 4 (pitch) + 3 (spectral) = 127
-  # Adjusting: MFCCs only without duplicating - Total: 40 + 4 + 3 = 47 features per frame
+  # Total de features sequenciais: 40 (MFCC) + 40 (delta) + 40 (delta-delta) + 4 (pitch) + 3 (spectral) = 127
+  # Ajustando: Apenas MFCCs sem duplicação - Total: 40 + 4 + 3 = 47 features por frame
 
-# Feature Aggregation for Random Forest
+# Agregação de Features para Random Forest
 aggregation:
-  statistics: ["mean", "std", "min", "max"]  # 4 statistics per feature
-  # Total aggregated features: 47 × 4 = 188 features
+  statistics: ["mean", "std", "min", "max"]  # 4 estatísticas por feature
+  # Total de features agregadas: 47 × 4 = 188 features
 
-# Random Forest Model (Section 3.4.1)
+# Modelo Random Forest (Seção 3.4.1)
 random_forest:
   n_estimators: 150
   max_depth: 20
@@ -71,11 +71,11 @@ random_forest:
   min_samples_leaf: 1
   max_features: "sqrt"
   bootstrap: true
-  n_jobs: -1  # Use all available cores
+  n_jobs: -1  # Usar todos os núcleos disponíveis
   random_state: 42
   verbose: 1
 
-# CNN 1D Model (Section 3.4.2)
+# Modelo CNN 1D (Seção 3.4.2)
 cnn:
   input_shape: [100, 47]  # (Tmax=100, F=47)
   architecture:
@@ -105,9 +105,9 @@ cnn:
     dense_units: 128
     dense_dropout: 0.5
     output_activation: "softmax"
-  # Approximate parameters: ~180K
+  # Parâmetros aproximados: ~180K
 
-# Training Configuration (Section 3.5)
+# Configuração de Treinamento (Seção 3.5)
 training:
   batch_size: 32
   epochs: 100
@@ -135,9 +135,9 @@ training:
       monitor: "val_accuracy"
       save_best_only: true
       mode: "max"
-  validation_split: 0.0  # Using separate validation set
+  validation_split: 0.0  # Usando conjunto de validação separado
 
-# Evaluation Metrics (Section 3.6)
+# Métricas de Avaliação (Seção 3.6)
 evaluation:
   metrics:
     - "accuracy"
@@ -150,10 +150,10 @@ evaluation:
   confusion_matrix: true
   per_speaker_accuracy: true
   statistical_tests:
-    method: "wilcoxon"  # or "t_test_paired"
+    method: "wilcoxon"  # ou "t_test_paired"
     alpha: 0.05
 
-# Paths
+# Caminhos
 paths:
   models: "models"
   logs: "logs"
