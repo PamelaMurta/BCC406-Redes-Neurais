@@ -1,0 +1,168 @@
+# Configuration file for RF vs CNN Speaker Identification Project
+# Based on: PROPOSTA DE PESQUISA - Disciplina BCC177 - Redes Neurais
+
+# Dataset Configuration
+dataset:
+  name: "VoxCeleb1"
+  num_speakers: 10  # 5-10 speakers
+  min_samples_per_speaker: 100
+  data_dir: "data/voxceleb1"
+  processed_dir: "data/processed"
+  
+# Data Splits
+splits:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  
+# Random Seeds (for reproducibility)
+seeds:
+  numpy: 42
+  tensorflow: 42
+  sklearn: 42
+
+# Audio Preprocessing (Section 3.2)
+preprocessing:
+  sample_rate: 16000  # 16kHz
+  channels: 1  # mono
+  vad:
+    enabled: true
+    threshold_db: 20  # Voice Activity Detection threshold
+    frame_length: 2048
+    hop_length: 512
+  normalization:
+    max_amplitude: 1.0
+  padding:
+    max_frames: 100  # Tmax = 100 frames
+    method: "pad_or_truncate"
+
+# Feature Extraction (Section 3.3)
+features:
+  mfcc:
+    n_mfcc: 40  # 40 MFCCs
+    n_fft: 2048
+    hop_length: 512
+    n_mels: 128
+    fmin: 0
+    fmax: 8000
+    include_deltas: true
+    include_delta_deltas: true
+  pitch:
+    method: "pyin"  # pYIN algorithm
+    fmin: 80  # Hz
+    fmax: 400  # Hz
+    statistics: ["mean", "std", "min", "max"]  # 4 features
+  spectral:
+    features: ["centroid", "rolloff", "zcr"]  # 3 features
+  # Total sequential features: 40 (MFCC) + 40 (delta) + 40 (delta-delta) + 4 (pitch) + 3 (spectral) = 127
+  # Adjusting: MFCCs only without duplicating - Total: 40 + 4 + 3 = 47 features per frame
+
+# Feature Aggregation for Random Forest
+aggregation:
+  statistics: ["mean", "std", "min", "max"]  # 4 statistics per feature
+  # Total aggregated features: 47 × 4 = 188 features
+
+# Random Forest Model (Section 3.4.1)
+random_forest:
+  n_estimators: 150
+  max_depth: 20
+  criterion: "gini"
+  min_samples_split: 2
+  min_samples_leaf: 1
+  max_features: "sqrt"
+  bootstrap: true
+  n_jobs: -1  # Use all available cores
+  random_state: 42
+  verbose: 1
+
+# CNN 1D Model (Section 3.4.2)
+cnn:
+  input_shape: [100, 47]  # (Tmax=100, F=47)
+  architecture:
+    conv_blocks:
+      - filters: 64
+        kernel_size: 3
+        padding: "same"
+        batch_norm: true
+        activation: "relu"
+        pool_size: 2
+        dropout: 0.3
+      - filters: 128
+        kernel_size: 3
+        padding: "same"
+        batch_norm: true
+        activation: "relu"
+        pool_size: 2
+        dropout: 0.3
+      - filters: 256
+        kernel_size: 3
+        padding: "same"
+        batch_norm: true
+        activation: "relu"
+        pool_size: 2
+        dropout: 0.3
+    global_pooling: "average"  # GlobalAveragePooling1D
+    dense_units: 128
+    dense_dropout: 0.5
+    output_activation: "softmax"
+  # Approximate parameters: ~180K
+
+# Training Configuration (Section 3.5)
+training:
+  batch_size: 32
+  epochs: 100
+  optimizer:
+    name: "adam"
+    learning_rate: 0.001
+    beta_1: 0.9
+    beta_2: 0.999
+    epsilon: 1e-07
+  loss: "categorical_crossentropy"
+  metrics: ["accuracy"]
+  callbacks:
+    early_stopping:
+      monitor: "val_loss"
+      patience: 15
+      restore_best_weights: true
+      mode: "min"
+    reduce_lr:
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 5
+      min_lr: 1e-06
+      mode: "min"
+    model_checkpoint:
+      monitor: "val_accuracy"
+      save_best_only: true
+      mode: "max"
+  validation_split: 0.0  # Using separate validation set
+
+# Evaluation Metrics (Section 3.6)
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision_macro"
+    - "precision_weighted"
+    - "recall_macro"
+    - "recall_weighted"
+    - "f1_macro"
+    - "f1_weighted"
+  confusion_matrix: true
+  per_speaker_accuracy: true
+  statistical_tests:
+    method: "wilcoxon"  # or "t_test_paired"
+    alpha: 0.05
+
+# Paths
+paths:
+  models: "models"
+  logs: "logs"
+  results: "results"
+  figures: "figures"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  save_to_file: true
+  log_dir: "logs"
