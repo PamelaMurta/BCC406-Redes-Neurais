@@ -1,181 +1,181 @@
-# Implementation Summary
+# Resumo da Implementação
 
-## Project: RF vs CNN for Speaker Identification
+## Projeto: RF vs CNN para Identificação de Falantes
 
-This document provides a summary of the complete implementation of the research project comparing Random Forest and CNN 1D for speaker identification using VoxCeleb1 dataset.
+Este documento fornece um resumo da implementação completa do projeto de pesquisa comparando Random Forest e CNN 1D para identificação de falantes usando o dataset VoxCeleb1.
 
 ---
 
-## ✅ What Has Been Implemented
+## ✅ O Que Foi Implementado
 
-### 1. Project Structure
+### 1. Estrutura do Projeto
 ```
 BCC406-Redes-Neurais/
-├── config/              # Configuration files
-├── notebooks/           # Jupyter notebooks (5 notebooks)
-├── src/                 # Source code modules
-│   ├── data/           # Data processing (3 files)
-│   ├── features/       # Feature extraction (2 files)
-│   ├── models/         # ML models (3 files)
-│   ├── training/       # Training utilities (2 files)
-│   ├── evaluation/     # Evaluation & visualization (2 files)
-│   └── utils/          # Helper functions (1 file)
-├── scripts/            # Executable scripts (4 scripts)
-├── docs/               # Documentation
-├── data/               # Dataset directory (empty - user fills)
-├── models/             # Saved models directory (empty)
-├── results/            # Results directory (empty)
-└── README.md           # Main documentation
+├── config/              # Arquivos de configuração
+├── notebooks/           # Notebooks Jupyter (5 notebooks)
+├── src/                 # Módulos de código fonte
+│   ├── data/           # Processamento de dados (3 arquivos)
+│   ├── features/       # Extração de features (2 arquivos)
+│   ├── models/         # Modelos de ML (3 arquivos)
+│   ├── training/       # Utilitários de treinamento (2 arquivos)
+│   ├── evaluation/     # Avaliação e visualização (2 arquivos)
+│   └── utils/          # Funções auxiliares (1 arquivo)
+├── scripts/            # Scripts executáveis (4 scripts)
+├── docs/               # Documentação
+├── data/               # Diretório do dataset (vazio - usuário preenche)
+├── models/             # Diretório de modelos salvos (vazio)
+├── results/            # Diretório de resultados (vazio)
+└── README.md           # Documentação principal
 ```
 
-### 2. Source Code Modules (~4,350+ lines of code)
+### 2. Módulos de Código Fonte (~4.350+ linhas de código)
 
-#### Data Processing (`src/data/`)
-- **preprocessing.py**: Audio preprocessing (VAD, normalization, padding)
-- **download_voxceleb.py**: Dataset download and organization utilities
-- **dataset.py**: Dataset management and train/val/test splitting
+#### Processamento de Dados (`src/data/`)
+- **preprocessing.py**: Pré-processamento de áudio (VAD, normalização, padding)
+- **download_voxceleb.py**: Utilitários para download e organização do dataset
+- **dataset.py**: Gerenciamento de dataset e divisão treino/val/teste
 
-#### Feature Extraction (`src/features/`)
-- **audio_features.py**: Extract MFCCs (40), pitch (4), spectral features (3)
-- **feature_aggregation.py**: Aggregate temporal features for Random Forest
+#### Extração de Features (`src/features/`)
+- **audio_features.py**: Extração de MFCCs (40), pitch (4), features espectrais (3)
+- **feature_aggregation.py**: Agregação de features temporais para Random Forest
 
-#### Models (`src/models/`)
-- **base_model.py**: Abstract base class for all models
-- **random_forest.py**: Random Forest classifier (150 trees, depth 20)
-- **cnn_1d.py**: CNN 1D architecture (3 conv blocks, ~180K parameters)
+#### Modelos (`src/models/`)
+- **base_model.py**: Classe base abstrata para todos os modelos
+- **random_forest.py**: Classificador Random Forest (150 árvores, profundidade 20)
+- **cnn_1d.py**: Arquitetura CNN 1D (3 blocos conv, ~180K parâmetros)
 
-#### Training (`src/training/`)
-- **trainer.py**: Generic model trainer with logging
-- **callbacks.py**: Custom Keras callbacks (logging, LR scheduling, etc.)
+#### Treinamento (`src/training/`)
+- **trainer.py**: Treinador genérico de modelos com logging
+- **callbacks.py**: Callbacks personalizados do Keras (logging, agendamento de LR, etc.)
 
-#### Evaluation (`src/evaluation/`)
-- **metrics.py**: Comprehensive metrics (accuracy, precision, recall, F1, statistical tests)
-- **visualization.py**: Plotting functions (confusion matrix, training curves, comparisons)
+#### Avaliação (`src/evaluation/`)
+- **metrics.py**: Métricas abrangentes (acurácia, precisão, recall, F1, testes estatísticos)
+- **visualization.py**: Funções de plotagem (matriz de confusão, curvas de treinamento, comparações)
 
-#### Utilities (`src/utils/`)
-- **helpers.py**: Configuration loading, logging, random seeds, system info
+#### Utilitários (`src/utils/`)
+- **helpers.py**: Carregamento de configuração, logging, sementes aleatórias, informações do sistema
 
-### 3. Configuration (`config/config.yaml`)
-Centralized configuration with:
-- Dataset parameters (speakers, sample rate, etc.)
-- Preprocessing settings (VAD, normalization)
-- Feature extraction parameters (MFCCs, pitch, spectral)
-- Random Forest hyperparameters
-- CNN architecture specification
-- Training configuration (optimizer, learning rate, callbacks)
-- Evaluation metrics
+### 3. Configuração (`config/config.yaml`)
+Configuração centralizada com:
+- Parâmetros do dataset (falantes, taxa de amostragem, etc.)
+- Configurações de pré-processamento (VAD, normalização)
+- Parâmetros de extração de features (MFCCs, pitch, espectral)
+- Hiperparâmetros do Random Forest
+- Especificação da arquitetura da CNN
+- Configuração de treinamento (otimizador, taxa de aprendizado, callbacks)
+- Métricas de avaliação
 
-### 4. Executable Scripts (`scripts/`)
-- **download_data.sh**: Download and organize VoxCeleb1 dataset
-- **train_rf.py**: Train Random Forest model
-- **train_cnn.py**: Train CNN model
-- **evaluate_models.py**: Compare and evaluate both models
+### 4. Scripts Executáveis (`scripts/`)
+- **download_data.sh**: Baixar e organizar o dataset VoxCeleb1
+- **train_rf.py**: Treinar modelo Random Forest
+- **train_cnn.py**: Treinar modelo CNN
+- **evaluate_models.py**: Comparar e avaliar ambos os modelos
 
-### 5. Jupyter Notebooks (`notebooks/`)
-1. **01_exploratory_analysis.ipynb**: Dataset exploration and visualization
-2. **02_feature_extraction.ipynb**: Extract and save features
-3. **03_random_forest_baseline.ipynb**: Train and evaluate RF
-4. **04_cnn_model.ipynb**: Train and evaluate CNN
-5. **05_comparative_analysis.ipynb**: Compare models and statistical tests
+### 5. Notebooks Jupyter (`notebooks/`)
+1. **01_exploratory_analysis.ipynb**: Exploração e visualização do dataset
+2. **02_feature_extraction.ipynb**: Extrair e salvar features
+3. **03_random_forest_baseline.ipynb**: Treinar e avaliar RF
+4. **04_cnn_model.ipynb**: Treinar e avaliar CNN
+5. **05_comparative_analysis.ipynb**: Comparar modelos e testes estatísticos
 
-### 6. Documentation
-- **README.md**: Comprehensive project documentation with installation and usage
-- **docs/metodologia.md**: Detailed methodology (10,000+ words)
-- **requirements.txt**: All Python dependencies
-- **.gitignore**: Proper Git exclusions
+### 6. Documentação
+- **README.md**: Documentação abrangente do projeto com instalação e uso
+- **docs/metodologia.md**: Metodologia detalhada (10.000+ palavras)
+- **requirements.txt**: Todas as dependências Python
+- **.gitignore**: Exclusões adequadas do Git
 
 ---
 
-## 🎯 Key Features Implemented
+## 🎯 Funcionalidades Principais Implementadas
 
-### Audio Processing Pipeline
-✅ 16kHz mono conversion  
-✅ Voice Activity Detection (VAD)  
-✅ Amplitude normalization  
-✅ Padding/truncation to fixed length  
+### Pipeline de Processamento de Áudio
+✅ Conversão para 16kHz mono  
+✅ Detecção de Atividade de Voz (VAD)  
+✅ Normalização de amplitude  
+✅ Padding/truncamento para comprimento fixo  
 
-### Feature Extraction
-✅ 40 MFCCs (Mel-Frequency Cepstral Coefficients)  
-✅ Pitch features (F0 via pYIN): mean, std, min, max  
-✅ Spectral features: centroid, rolloff, zero-crossing rate  
-✅ Sequential features (T=100, F=47) for CNN  
-✅ Aggregated features (188 features) for Random Forest  
+### Extração de Features
+✅ 40 MFCCs (Coeficientes Cepstrais em Escala Mel)  
+✅ Features de pitch (F0 via pYIN): média, std, min, max  
+✅ Features espectrais: centróide, rolloff, taxa de cruzamento por zero  
+✅ Features sequenciais (T=100, F=47) para CNN  
+✅ Features agregadas (188 features) para Random Forest  
 
-### Random Forest Model
-✅ 150 decision trees  
-✅ Max depth: 20  
-✅ Gini impurity criterion  
-✅ Feature importance analysis  
-✅ Fast training on CPU  
+### Modelo Random Forest
+✅ 150 árvores de decisão  
+✅ Profundidade máxima: 20  
+✅ Critério de impureza de Gini  
+✅ Análise de importância de features  
+✅ Treinamento rápido em CPU  
 
-### CNN 1D Model
-✅ 3 convolutional blocks (64 → 128 → 256 filters)  
-✅ Batch normalization + ReLU activation  
+### Modelo CNN 1D
+✅ 3 blocos convolucionais (64 → 128 → 256 filtros)  
+✅ Normalização em lote + ativação ReLU  
 ✅ MaxPooling + Dropout (0.3)  
 ✅ GlobalAveragePooling1D  
-✅ Dense layer (128) + Dropout (0.5)  
-✅ Softmax output  
-✅ ~180K trainable parameters  
+✅ Camada densa (128) + Dropout (0.5)  
+✅ Saída Softmax  
+✅ ~180K parâmetros treináveis  
 
-### Training Infrastructure
-✅ Adam optimizer (lr=0.001)  
-✅ Early stopping (patience=15)  
-✅ Learning rate reduction on plateau  
-✅ Model checkpointing (save best)  
-✅ Training history logging  
-✅ Reproducible results (fixed seeds)  
+### Infraestrutura de Treinamento
+✅ Otimizador Adam (lr=0.001)  
+✅ Early stopping (paciência=15)  
+✅ Redução da taxa de aprendizado em platô  
+✅ Checkpointing de modelo (salvar melhor)  
+✅ Logging do histórico de treinamento  
+✅ Resultados reproduzíveis (sementes fixas)  
 
-### Evaluation & Metrics
-✅ Accuracy, Precision, Recall, F1 (macro & weighted)  
-✅ Confusion matrix (normalized & raw)  
-✅ Per-speaker accuracy analysis  
-✅ Statistical significance tests (Wilcoxon, t-test)  
-✅ Model comparison visualization  
-✅ ROC curves (multi-class)  
+### Avaliação e Métricas
+✅ Acurácia, Precisão, Recall, F1 (macro e ponderado)  
+✅ Matriz de confusão (normalizada e bruta)  
+✅ Análise de acurácia por falante  
+✅ Testes de significância estatística (Wilcoxon, teste-t)  
+✅ Visualização de comparação de modelos  
+✅ Curvas ROC (multi-classe)  
 
-### Visualization
-✅ Training curves (loss, accuracy)  
-✅ Confusion matrices (heatmaps)  
-✅ Per-speaker accuracy (bar charts)  
-✅ Model comparison (side-by-side)  
-✅ Feature importance (RF)  
-✅ Audio waveforms and spectrograms  
-
----
-
-## 📊 Implementation Statistics
-
-- **Total Python files**: 23
-- **Total lines of code**: ~4,350+
-- **Jupyter notebooks**: 5
-- **Configuration files**: 1
-- **Shell scripts**: 1
-- **Documentation pages**: 2 (README + methodology)
+### Visualização
+✅ Curvas de treinamento (perda, acurácia)  
+✅ Matrizes de confusão (heatmaps)  
+✅ Acurácia por falante (gráficos de barras)  
+✅ Comparação de modelos (lado a lado)  
+✅ Importância de features (RF)  
+✅ Formas de onda de áudio e espectrogramas  
 
 ---
 
-## 🚀 Usage Workflow
+## 📊 Estatísticas da Implementação
 
-### Step 1: Setup Environment
+- **Total de arquivos Python**: 23
+- **Total de linhas de código**: ~4.350+
+- **Notebooks Jupyter**: 5
+- **Arquivos de configuração**: 1
+- **Scripts shell**: 1
+- **Páginas de documentação**: 2 (README + metodologia)
+
+---
+
+## 🚀 Fluxo de Uso
+
+### Passo 1: Configurar Ambiente
 ```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Step 2: Download Dataset
+### Passo 2: Baixar Dataset
 ```bash
 bash scripts/download_data.sh
-# Follow instructions to download VoxCeleb1
+# Siga as instruções para baixar o VoxCeleb1
 ```
 
-### Step 3: Extract Features
+### Passo 3: Extrair Features
 ```bash
 jupyter notebook notebooks/02_feature_extraction.ipynb
-# Or implement automated feature extraction script
+# Ou implemente um script automatizado de extração de features
 ```
 
-### Step 4: Train Models
+### Passo 4: Treinar Modelos
 
 **Random Forest:**
 ```bash
@@ -193,7 +193,7 @@ python scripts/train_cnn.py \
     --test-features data/processed/test_sequential.h5
 ```
 
-### Step 5: Compare Models
+### Passo 5: Comparar Modelos
 ```bash
 python scripts/evaluate_models.py \
     --rf-model models/random_forest_best.pkl \
@@ -202,99 +202,99 @@ python scripts/evaluate_models.py \
     --test-features-cnn data/processed/test_sequential.h5
 ```
 
-### Step 6: Analysis
+### Passo 6: Análise
 ```bash
 jupyter notebook notebooks/05_comparative_analysis.ipynb
 ```
 
 ---
 
-## 📦 Dependencies
+## 📦 Dependências
 
-All major libraries included in `requirements.txt`:
-- **Audio**: librosa, soundfile, pydub
+Todas as principais bibliotecas incluídas em `requirements.txt`:
+- **Áudio**: librosa, soundfile, pydub
 - **Deep Learning**: tensorflow, keras
 - **Machine Learning**: scikit-learn, scipy
-- **Data**: numpy, pandas
-- **Visualization**: matplotlib, seaborn, plotly
-- **Utils**: pyyaml, tqdm, joblib
+- **Dados**: numpy, pandas
+- **Visualização**: matplotlib, seaborn, plotly
+- **Utilitários**: pyyaml, tqdm, joblib
 
 ---
 
-## ✨ Highlights
+## ✨ Destaques
 
-### Code Quality
-- Type hints where appropriate
-- Comprehensive docstrings (Google style)
-- Modular and reusable design
-- Follows PEP 8 style guidelines
-- Error handling and validation
+### Qualidade de Código
+- Type hints quando apropriado
+- Docstrings abrangentes (estilo Google)
+- Design modular e reutilizável
+- Segue as diretrizes PEP 8
+- Tratamento de erros e validação
 
-### Reproducibility
-- Fixed random seeds (numpy, tensorflow, sklearn)
-- Configuration-driven (no hardcoded values)
-- Complete dependency specifications
-- Detailed documentation
+### Reprodutibilidade
+- Sementes aleatórias fixas (numpy, tensorflow, sklearn)
+- Orientado por configuração (sem valores hardcoded)
+- Especificações completas de dependências
+- Documentação detalhada
 
-### Flexibility
-- Easy to extend with new models
-- Configurable hyperparameters
-- Support for different dataset sizes
-- Modular pipeline components
+### Flexibilidade
+- Fácil de estender com novos modelos
+- Hiperparâmetros configuráveis
+- Suporte para diferentes tamanhos de dataset
+- Componentes de pipeline modulares
 
-### Documentation
-- README with step-by-step instructions
-- Detailed methodology document
-- Inline code comments
-- Notebook explanations
-
----
-
-## 🎓 Educational Value
-
-This implementation serves as:
-1. **Learning resource** for ML/DL pipeline development
-2. **Template** for audio classification projects
-3. **Reference** for comparing classical ML vs Deep Learning
-4. **Example** of reproducible research implementation
+### Documentação
+- README com instruções passo a passo
+- Documento de metodologia detalhada
+- Comentários inline no código
+- Explicações nos notebooks
 
 ---
 
-## 📝 Academic Alignment
+## 🎓 Valor Educacional
 
-The implementation faithfully follows the research proposal specifications:
-- ✅ Section 3.2: Preprocessing (16kHz, mono, VAD, normalization)
-- ✅ Section 3.3: Features (40 MFCCs, pitch pYIN, spectral)
-- ✅ Section 3.4.1: RF (150 trees, depth 20, 188 features)
-- ✅ Section 3.4.2: CNN (3 blocks, [64,128,256] filters, dropout)
-- ✅ Section 3.5: Training (Adam, lr=0.001, batch 32, callbacks)
-- ✅ Section 3.6: Metrics (accuracy, precision, recall, F1, tests)
+Esta implementação serve como:
+1. **Recurso de aprendizado** para desenvolvimento de pipelines de ML/DL
+2. **Template** para projetos de classificação de áudio
+3. **Referência** para comparar ML clássico vs Deep Learning
+4. **Exemplo** de implementação de pesquisa reproduzível
 
 ---
 
-## 🔮 Future Enhancements
+## 📝 Alinhamento Acadêmico
 
-Possible extensions (not in scope):
-- Data augmentation (time stretch, pitch shift, noise)
-- Advanced architectures (ResNet, Attention, Transformers)
-- Transfer learning (pre-trained models)
-- Real-time inference API
-- Web interface for demonstrations
-- Multi-task learning (emotion, gender, age)
-
----
-
-## 📞 Support
-
-For questions or issues:
-1. Check README.md
-2. Review docs/metodologia.md
-3. Open an issue on GitHub
+A implementação segue fielmente as especificações da proposta de pesquisa:
+- ✅ Seção 3.2: Pré-processamento (16kHz, mono, VAD, normalização)
+- ✅ Seção 3.3: Features (40 MFCCs, pitch pYIN, espectral)
+- ✅ Seção 3.4.1: RF (150 árvores, profundidade 20, 188 features)
+- ✅ Seção 3.4.2: CNN (3 blocos, [64,128,256] filtros, dropout)
+- ✅ Seção 3.5: Treinamento (Adam, lr=0.001, batch 32, callbacks)
+- ✅ Seção 3.6: Métricas (acurácia, precisão, recall, F1, testes)
 
 ---
 
-**Project Status**: ✅ **COMPLETE AND READY FOR USE**
+## 🔮 Melhorias Futuras
 
-**Last Updated**: December 2024
-**Discipline**: BCC177 - Redes Neurais
-**Institution**: UFOP
+Possíveis extensões (fora do escopo):
+- Aumento de dados (time stretch, pitch shift, ruído)
+- Arquiteturas avançadas (ResNet, Attention, Transformers)
+- Transfer learning (modelos pré-treinados)
+- API de inferência em tempo real
+- Interface web para demonstrações
+- Aprendizado multi-tarefa (emoção, gênero, idade)
+
+---
+
+## 📞 Suporte
+
+Para dúvidas ou problemas:
+1. Consulte README.md
+2. Revise docs/metodologia.md
+3. Abra uma issue no GitHub
+
+---
+
+**Status do Projeto**: ✅ **COMPLETO E PRONTO PARA USO**
+
+**Última Atualização**: Dezembro de 2024
+**Disciplina**: BCC177 - Redes Neurais
+**Instituição**: UFOP
