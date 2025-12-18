@@ -4,9 +4,9 @@
 # Configuração do Dataset
 dataset:
   name: "VoxCeleb1"
-  num_speakers: 10  # 5-10 falantes
-  min_samples_per_speaker: 100
-  data_dir: "data/voxceleb1"
+  num_speakers: 10  # 5-10 falantes (usando dataset sintético)
+  min_samples_per_speaker: 15
+  data_dir: "data/raw"
   processed_dir: "data/processed"
   
 # Divisão de Dados

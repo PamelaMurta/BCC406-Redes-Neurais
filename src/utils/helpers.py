@@ -24,7 +24,7 @@ def load_config(config_path: str = 'config/config.yaml') -> Dict:
     Returns:
         Dicionário de configuração
     """
-    with open(config_path, 'r') as f:
+    with open(config_path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     
     return config
